@@ -62,8 +62,7 @@ interface MessageRepository {
         threadId: Long,
         addresses: List<String>,
         body: String,
-        attachments: List<Attachment>,
-        delay: Int = 0
+        attachments: List<Attachment>
     )
 
     /**

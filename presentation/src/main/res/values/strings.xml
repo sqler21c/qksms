@@ -195,6 +195,15 @@
         <item>Delete</item>
     </string-array>
 
+    <string name="delayed_notification_channel_name">Delayed messages</string>
+    <string name="delayed_notification_title">Sending message in %ss…</string>
+    <string-array name="delayed_sending_labels">
+        <item>No delay</item>
+        <item>Short</item>
+        <item>Medium</item>
+        <item>Long</item>
+    </string-array>
+
     <string name="settings_category_appearance">Appearance</string>
     <string name="settings_category_general">General</string>
     <string name="settings_category_qkreply">QK Reply</string>
@@ -358,13 +367,6 @@
         <item>Normal</item>
         <item>Large</item>
         <item>Larger</item>
-    </string-array>
-
-    <string-array name="delayed_sending_labels">
-        <item>No delay</item>
-        <item>Short</item>
-        <item>Medium</item>
-        <item>Long</item>
     </string-array>
 
     <string-array name="mms_sizes">

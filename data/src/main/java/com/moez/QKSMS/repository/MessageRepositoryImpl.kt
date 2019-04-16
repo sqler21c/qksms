@@ -18,14 +18,12 @@
  */
 package com.moez.QKSMS.repository
 
-import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
@@ -44,7 +42,7 @@ import com.moez.QKSMS.model.Message
 import com.moez.QKSMS.model.MmsPart
 import com.moez.QKSMS.receiver.SmsDeliveredReceiver
 import com.moez.QKSMS.receiver.SmsSentReceiver
-import com.moez.QKSMS.service.SendSmsService
+import com.moez.QKSMS.service.SendDelayedMessageService
 import com.moez.QKSMS.util.ImageUtils
 import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.tryOrNull
@@ -215,22 +213,21 @@ class MessageRepositoryImpl @Inject constructor(
         threadId: Long,
         addresses: List<String>,
         body: String,
-        attachments: List<Attachment>,
-        delay: Int
+        attachments: List<Attachment>
     ) {
+        val delay = when (prefs.sendDelay.get()) {
+            Preferences.SEND_DELAY_SHORT -> 3000
+            Preferences.SEND_DELAY_MEDIUM -> 5000
+            Preferences.SEND_DELAY_LONG -> 10000
+            else -> 0
+        }
+
         if (addresses.size == 1 && attachments.isEmpty()) { // SMS
             if (delay > 0) { // With delay
                 val sendTime = System.currentTimeMillis() + delay
                 val message = insertSentSms(subId, threadId, addresses.first(), body, sendTime)
 
-                val intent = getIntentForDelayedSms(message.id)
-
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, sendTime, intent)
-                } else {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, sendTime, intent)
-                }
+                SendDelayedMessageService.start(context, message.id)
             } else { // No delay
                 val message = insertSentSms(subId, threadId, addresses.first(), body, System.currentTimeMillis())
                 sendSms(message)
@@ -308,13 +305,7 @@ class MessageRepositoryImpl @Inject constructor(
     }
 
     override fun cancelDelayedSms(id: Long) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(getIntentForDelayedSms(id))
-    }
-
-    private fun getIntentForDelayedSms(id: Long): PendingIntent {
-        val intent = Intent(context, SendSmsService::class.java).putExtra("id", id)
-        return PendingIntent.getService(context, id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        SendDelayedMessageService.stop(context, id)
     }
 
     override fun insertSentSms(subId: Int, threadId: Long, address: String, body: String, date: Long): Message {

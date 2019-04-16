@@ -36,7 +36,6 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.get
 import com.moez.QKSMS.R
 import com.moez.QKSMS.common.util.extensions.dpToPx
 import com.moez.QKSMS.extensions.isImage
@@ -44,11 +43,11 @@ import com.moez.QKSMS.feature.compose.ComposeActivity
 import com.moez.QKSMS.feature.qkreply.QkReplyActivity
 import com.moez.QKSMS.manager.PermissionManager
 import com.moez.QKSMS.mapper.CursorToPartImpl
+import com.moez.QKSMS.model.Message
 import com.moez.QKSMS.receiver.DeleteMessagesReceiver
 import com.moez.QKSMS.receiver.MarkReadReceiver
 import com.moez.QKSMS.receiver.MarkSeenReceiver
 import com.moez.QKSMS.receiver.RemoteMessagingReceiver
-import com.moez.QKSMS.repository.ContactRepository
 import com.moez.QKSMS.repository.ConversationRepository
 import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.GlideApp
@@ -70,6 +69,7 @@ class NotificationManagerImpl @Inject constructor(
     companion object {
         const val DEFAULT_CHANNEL_ID = "notifications_default"
         const val BACKUP_RESTORE_CHANNEL_ID = "notifications_backup_restore"
+        const val DELAYED_MESSAGE_CHANNEL_ID = "notifications_delayed_message"
 
         val VIBRATE_PATTERN = longArrayOf(0, 200, 0, 200)
     }
@@ -412,6 +412,27 @@ class NotificationManagerImpl @Inject constructor(
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setProgress(0, 0, true)
+                .setOngoing(true)
+    }
+
+    override fun getNotificationForDelayedMessage(message: Message): NotificationCompat.Builder {
+        if (Build.VERSION.SDK_INT >= 26) {
+            val name = context.getString(R.string.delayed_notification_channel_name)
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(DELAYED_MESSAGE_CHANNEL_ID, name, importance)
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        return NotificationCompat.Builder(context, DELAYED_MESSAGE_CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.delayed_notification_title))
+                .setShowWhen(false)
+                .setWhen(System.currentTimeMillis()) // Set this anyway in case it's shown
+                .setSmallIcon(R.drawable.ic_av_timer_white_24dp)
+                .setGroup(DELAYED_MESSAGE_CHANNEL_ID)
+                .setColor(colors.theme().theme)
+                .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(true)
     }
 

@@ -19,6 +19,7 @@
 package com.moez.QKSMS.manager
 
 import androidx.core.app.NotificationCompat
+import com.moez.QKSMS.model.Message
 
 interface NotificationManager {
 
@@ -31,5 +32,7 @@ interface NotificationManager {
     fun buildNotificationChannelId(threadId: Long): String
 
     fun getNotificationForBackup(): NotificationCompat.Builder
+
+    fun getNotificationForDelayedMessage(message: Message): NotificationCompat.Builder
 
 }

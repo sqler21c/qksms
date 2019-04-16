@@ -192,6 +192,7 @@
             </intent-filter>
         </service>
         <service android:name=".service.SendSmsService" />
+        <service android:name=".service.SendDelayedMessageService" />
 
         <meta-data
             android:name="preloaded_fonts"

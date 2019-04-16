@@ -42,7 +42,7 @@ class SendMessage @Inject constructor(
             .filter { params.addresses.isNotEmpty() }
             .doOnNext {
                 messageRepo.sendMessage(params.subId, params.threadId, params.addresses, params.body,
-                        params.attachments, params.delay)
+                        params.attachments)
             }
             .map {
                 // On some manufacturers, we can't obtain a threadId for a new conversation. In
