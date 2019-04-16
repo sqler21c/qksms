@@ -127,7 +127,7 @@
         android:layout_height="0dp"
         android:elevation="4dp"
         android:padding="6dp"
-        android:src="@drawable/ic_stop_black_24dp"
+        android:src="@drawable/ic_clear_black_24dp"
         app:layout_constraintBottom_toBottomOf="@id/cancel"
         app:layout_constraintEnd_toEndOf="@id/cancel"
         app:layout_constraintStart_toStartOf="@id/cancel"

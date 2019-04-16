@@ -185,7 +185,7 @@
             <com.moez.QKSMS.common.widget.PreferenceView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:icon="@drawable/ic_av_timer_black_24dp"
+                app:icon="@drawable/ic_av_timer_white_24dp"
                 app:summary="@string/qksms_plus_delayed_summary"
                 app:title="@string/qksms_plus_delayed_title" />
 
