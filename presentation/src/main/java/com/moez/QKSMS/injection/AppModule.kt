@@ -24,6 +24,8 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.lifecycle.ViewModelProvider
 import com.f2prateek.rx.preferences2.RxSharedPreferences
+import com.moez.QKSMS.blocking.BlockingClient
+import com.moez.QKSMS.blocking.ShouldIAnswerBlockingClient
 import com.moez.QKSMS.common.ViewModelFactory
 import com.moez.QKSMS.common.util.NotificationManagerImpl
 import com.moez.QKSMS.common.util.ShortcutManagerImpl
@@ -37,8 +39,6 @@ import com.moez.QKSMS.manager.AlarmManager
 import com.moez.QKSMS.manager.AlarmManagerImpl
 import com.moez.QKSMS.manager.AnalyticsManager
 import com.moez.QKSMS.manager.AnalyticsManagerImpl
-import com.moez.QKSMS.manager.ExternalBlockingManager
-import com.moez.QKSMS.manager.ExternalBlockingManagerImpl
 import com.moez.QKSMS.manager.KeyManager
 import com.moez.QKSMS.manager.KeyManagerImpl
 import com.moez.QKSMS.manager.NotificationManager
@@ -123,7 +123,7 @@ class AppModule(private var application: Application) {
     fun provideAnalyticsManager(manager: AnalyticsManagerImpl): AnalyticsManager = manager
 
     @Provides
-    fun externalBlockingManager(manager: ExternalBlockingManagerImpl): ExternalBlockingManager = manager
+    fun externalBlockingManager(manager: ShouldIAnswerBlockingClient): BlockingClient = manager
 
     @Provides
     fun provideKeyManager(manager: KeyManagerImpl): KeyManager = manager
