@@ -194,6 +194,9 @@
         <service android:name=".service.SendSmsService" />
 
         <meta-data
+            android:name="com.callcontrol.datashare.messaging"
+            android:value="true" />
+        <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
